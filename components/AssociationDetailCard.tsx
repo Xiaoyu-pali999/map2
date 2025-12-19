@@ -2,16 +2,18 @@
 import React from 'react';
 import { AssociationMember, Field } from '../types';
 import { useData } from '../contexts/DataContext';
-import { X, User, ExternalLink, MapPin, Globe, Building, Users, Calendar, Lock, Sparkles, Mail, LayoutGrid } from 'lucide-react';
+import { X, User, ExternalLink, MapPin, Globe, Building, Users, Calendar, Lock, Sparkles, Mail, LayoutGrid, ChevronUp, ChevronDown } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
 
 interface Props {
   data: AssociationMember;
   onClose?: () => void;
   isMobile: boolean;
+  onPrev?: () => void;
+  onNext?: () => void;
 }
 
-const AssociationDetailCard: React.FC<Props> = ({ data, onClose, isMobile }) => {
+const AssociationDetailCard: React.FC<Props> = ({ data, onClose, isMobile, onPrev, onNext }) => {
   const { language } = useData(); 
   const T = UI_TRANSLATIONS[language]; 
   
@@ -32,7 +34,28 @@ const AssociationDetailCard: React.FC<Props> = ({ data, onClose, isMobile }) => 
 
       {/* 头部摘要信息 */}
       <div className="relative p-10 pb-8 border-b border-slate-50 shrink-0">
-         <button onClick={onClose} className="absolute top-8 right-10 p-3 bg-slate-50 hover:bg-blue-50 text-slate-300 hover:text-blue-600 rounded-full transition-all duration-300"><X size={20} /></button>
+         <div className="absolute top-8 right-10 flex items-center gap-2">
+            {/* 上下切换按钮 */}
+            <div className="flex bg-slate-50 rounded-full p-1 mr-2">
+               <button 
+                  onClick={onPrev} 
+                  disabled={!onPrev}
+                  className={`p-2 rounded-full transition-all ${onPrev ? 'hover:bg-blue-100 text-blue-600' : 'text-slate-200 cursor-not-allowed'}`}
+               >
+                  <ChevronUp size={20} />
+               </button>
+               <button 
+                  onClick={onNext} 
+                  disabled={!onNext}
+                  className={`p-2 rounded-full transition-all ${onNext ? 'hover:bg-blue-100 text-blue-600' : 'text-slate-200 cursor-not-allowed'}`}
+               >
+                  <ChevronDown size={20} />
+               </button>
+            </div>
+            <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-blue-50 text-slate-300 hover:text-blue-600 rounded-full transition-all duration-300">
+               <X size={20} />
+            </button>
+         </div>
          
          <div className="flex gap-8 items-start">
              <div className="w-28 h-28 rounded-[2.5rem] bg-white border border-slate-100 p-5 shadow-2xl shadow-slate-100 flex items-center justify-center shrink-0">
@@ -42,7 +65,7 @@ const AssociationDetailCard: React.FC<Props> = ({ data, onClose, isMobile }) => 
                      <Sparkles size={40} className="text-blue-100" />
                  )}
              </div>
-             <div className="pt-2">
+             <div className="pt-2 pr-16">
                  <div className="flex flex-wrap items-center gap-3 mb-4">
                      <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-full border ${isAffiliate ? 'bg-slate-50 text-slate-400 border-slate-200' : 'bg-blue-600 text-white border-blue-600 shadow-xl shadow-blue-100'}`}>
                          {isAffiliate ? (language === 'zh' ? '附属机构' : 'Affiliate') : (language === 'zh' ? '联盟会员' : 'Full Member')}

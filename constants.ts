@@ -2,7 +2,7 @@
 import { AssociationMember, Region, Field } from './types';
 
 export const REGION_COLORS: Record<Region, { fill: string; text: string; stroke: string }> = {
-  Europe: { fill: '#2563EB', text: '#1E3A8A', stroke: '#93C5FD' }, // 欧洲区统一使用专业级蓝色
+  Europe: { fill: '#2563EB', text: '#1E3A8A', stroke: '#93C5FD' }, 
   AsiaPacific: { fill: '#F59E0B', text: '#92400E', stroke: '#FCD34D' },
   Americas: { fill: '#10B981', text: '#065F46', stroke: '#6EE7B7' },
   Africa: { fill: '#EF4444', text: '#991B1B', stroke: '#FCA5A5' },
@@ -14,7 +14,7 @@ export const EXPORT_MAP_BG = "https://upload.wikimedia.org/wikipedia/commons/thu
 
 export const UI_TRANSLATIONS = {
   zh: {
-    systemTitle: '全球采购与供应管理交互式地图',
+    systemTitle: '国际采购与供应管理联盟地图',
     systemSubtitle: 'IFPSM 国际联盟成员档案管理系统',
     clickToView: '查看详细档案',
     zoomToNav: '缩放导航',
@@ -51,7 +51,7 @@ export const UI_TRANSLATIONS = {
     digitalAssets: '数字化治理资产'
   },
   en: {
-    systemTitle: 'Global Procurement Map System',
+    systemTitle: 'International Procurement Alliance Map',
     systemSubtitle: 'IFPSM Member Intelligence Hub',
     clickToView: 'View Profile',
     zoomToNav: 'Scroll to Zoom',

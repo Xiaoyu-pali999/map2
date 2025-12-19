@@ -1,8 +1,8 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useData } from '../contexts/DataContext';
 import { AssociationMember, Region, VerificationStatus, MemberType, CustomField } from '../types';
-import { X, Save, ArrowLeft, Globe, User, Edit3, Search, Plus, Trash2, Layout, Link, Map, Info, Sparkles } from 'lucide-react';
+import { X, Save, ArrowLeft, Globe, User, Edit3, Search, Plus, Trash2, Layout, Link, Map, Info, Sparkles, Upload } from 'lucide-react';
 
 const StatusSelector = ({ status, onChange }: { status: VerificationStatus, onChange: (s: VerificationStatus) => void }) => {
     const states: VerificationStatus[] = ['confirmed', 'pending', 'auto'];
@@ -20,12 +20,23 @@ const AdminEditor: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<AssociationMember>>({});
   const [searchTerm, setSearchTerm] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => members.filter(m => m.abbreviation.toLowerCase().includes(searchTerm.toLowerCase()) || m.nameCN.includes(searchTerm)), [members, searchTerm]);
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, logo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCreateNew = () => {
       const id = 'm-' + Date.now();
-      // Added missing required fields: memberCategory and coreAreas
       const newM: AssociationMember = {
           id, 
           memberCategory: 'association',
@@ -124,10 +135,22 @@ const AdminEditor: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 <div className="space-y-4">
                                     <div className="w-full aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center p-6 relative overflow-hidden group">
                                         {formData.logo ? <img src={formData.logo} className="max-w-full max-h-full object-contain" alt="Preview" /> : <Info className="text-slate-200" size={32}/>}
-                                        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                                            <span className="text-[10px] text-white font-black uppercase">预览图</span>
+                                        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button 
+                                              onClick={() => fileInputRef.current?.click()}
+                                              className="bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-xl flex items-center gap-2 pointer-events-auto"
+                                            >
+                                              <Upload size={14} /> 上传图片
+                                            </button>
                                         </div>
                                     </div>
+                                    <input 
+                                      type="file" 
+                                      ref={fileInputRef} 
+                                      className="hidden" 
+                                      accept="image/*" 
+                                      onChange={handleFileUpload} 
+                                    />
                                     <input className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-[10px] font-mono focus:bg-white transition-all outline-none" placeholder="输入 Logo URL 或 Base64..." value={formData.logo} onChange={e => setFormData({...formData, logo: e.target.value})} />
                                 </div>
                             </div>

@@ -76,6 +76,22 @@ const AppContent: React.FC = () => {
     });
   }, [members, displaySettings]);
 
+  const currentIndex = useMemo(() => {
+    return selectedAssociation ? filteredMembers.findIndex(m => m.id === selectedAssociation.id) : -1;
+  }, [selectedAssociation, filteredMembers]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex > 0) {
+      setSelectedAssociation(filteredMembers[currentIndex - 1]);
+    }
+  }, [currentIndex, filteredMembers]);
+
+  const handleNext = useCallback(() => {
+    if (currentIndex < filteredMembers.length - 1) {
+      setSelectedAssociation(filteredMembers[currentIndex + 1]);
+    }
+  }, [currentIndex, filteredMembers]);
+
   return (
     <div className="relative w-full h-screen flex flex-col bg-[#FDFDFF] overflow-hidden">
       <header className={`absolute top-0 left-0 w-full pointer-events-none z-30 flex items-start justify-between transition-all duration-500 ${isMobile ? 'px-6 pt-6' : 'px-16 mt-12'}`}>
@@ -118,7 +134,13 @@ const AppContent: React.FC = () => {
         <Legend />
         {selectedAssociation && (
           <div className={isMobile ? 'contents' : 'absolute top-40 right-16 z-40'}>
-            <AssociationDetailCard data={selectedAssociation} onClose={() => setSelectedAssociation(null)} isMobile={isMobile} />
+            <AssociationDetailCard 
+              data={selectedAssociation} 
+              onClose={() => setSelectedAssociation(null)} 
+              isMobile={isMobile}
+              onPrev={currentIndex > 0 ? handlePrev : undefined}
+              onNext={currentIndex < filteredMembers.length - 1 ? handleNext : undefined}
+            />
           </div>
         )}
         {isAdminMode && <AdminEditor onClose={toggleAdminMode} />}
